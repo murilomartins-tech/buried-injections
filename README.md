@@ -30,6 +30,12 @@ normal traffic.**
 > 🎚️ **Tune each threshold to a 2% false-alarm budget and the ranking flips:** Prompt Guard 2
 > goes from worst to best (99% on unseen domains), and the "catch everything" detectors fall to ~0%
 
+> **The headline finding isn't "the model can't see buried injections" — it's that the shipped
+> defaults are miscalibrated for mixed content.** Prompt Guard 2 catches **1% at its default cutoff
+> and 99% on an unseen domain** once the threshold is tuned to a 2% false-alarm budget. (Read that 99%
+> as "defaults are wrong by ~two orders of magnitude," not "solved" — it's tuned on AgentDojo's
+> shared attack template; see the [caveat](#%EF%B8%8F-at-a-fixed-false-alarm-budget).)
+
 They fail in **three different ways** out of the box 👇, and the default threshold turns out to
 matter as much as the model ([details](#%EF%B8%8F-at-a-fixed-false-alarm-budget)).
 
