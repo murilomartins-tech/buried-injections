@@ -1,4 +1,4 @@
-.PHONY: bench bench-agentdojo bench-windows bench-payloads bench-budget setup
+.PHONY: bench bench-agentdojo bench-windows bench-payloads bench-budget bench-action test setup
 
 # Everything runs in a local Python 3.12 venv (llm-guard does not build on 3.14).
 PY := .venv/bin/python
@@ -23,3 +23,11 @@ bench-budget:
 # Input scope x window size table (~15 min on CPU).
 bench-windows:
 	$(PY) bench/windows.py
+
+# Action-level metric (#9): simulated AgentDojo banking agent, deterministic evaluator.
+# Reuses the saved detector scores from bench-budget, so no model download (~5 s).
+bench-action:
+	$(PY) bench/action_level.py
+
+test:
+	$(PY) -m pytest -q tests
