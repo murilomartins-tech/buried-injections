@@ -199,6 +199,14 @@ sees, flag an injection attack without wrongly flagging benign tool output?
   - ☁️ the cloud metadata endpoint `169.254.169.254`
   - 📥 `curl … | sh`
 
+🎯 **Preview, action level** ([`bench/action/`](bench/action/README.md), [#9](https://github.com/rudratoshs/buried-injections/issues/9)):
+`make bench-action` scores the **tool call** instead of the text, on AgentDojo banking with a
+simulated tool layer and a deterministic evaluator (no LLM judge): `task_aligned` and
+`authorized` are separate predicates, and provenance (`direct` / `contextual` / `presence`) is
+reported as evidence, never as the gate. With a worst-case compliant agent it reports, per
+detector, how many misses reach a financial or account-security call, and how many tasks a catch
+or false alarm leaves undone. Live-agent mode is a follow-up.
+
 > [!TIP]
 > 💡 **Takeaway for anyone building an agent firewall:** you can't reliably tell an
 > attacker's instruction from a user's by reading the text. Defences need to know
@@ -221,6 +229,8 @@ make bench-agentdojo  # 📊 the leaderboard above (~25 min on CPU for all 10 de
 make bench-payloads   # 🔬 each attack scored on its own (~1 min)
 make bench-budget     # 🎚️ catch rate at a 2% false-alarm budget, cross-domain (~20 min; `.venv/bin/python bench/at_budget.py --reuse` reuses saved scores)
 make bench-windows    # 🪟 Prompt Guard 2 input scope × window size (~15 min)
+make bench-action     # 🎯 action-level metric preview, AgentDojo banking (~5 s, reuses saved scores)
+make test             # ✅ evaluator tests
 ```
 
 ⬇️ The first run downloads ~5 GB of model weights.
@@ -240,6 +250,7 @@ run `.venv/bin/hf auth login`, then change the model ids in
 | `make bench-payloads` | ~1 min | — | Not needed |
 | `make bench-budget` | ~20 min | — | Optional |
 | `make bench-windows` | ~15 min | — | Optional |
+| `make bench-action` | ~5 s | — | Not needed |
 
 Times are rough estimates on a modern CPU (e.g., Apple silicon or equivalent). No target requires a GPU; GPU acceleration only shortens the detector benchmarks.
 
@@ -255,6 +266,9 @@ Times are rough estimates on a modern CPU (e.g., Apple silicon or equivalent). N
 | `bench/payloads.py` | Each AgentDojo attack scored alone, plus hand-written controls |
 | `bench/at_budget.py` | Catch rate at a fixed false-alarm budget, with the threshold checked on unseen domains |
 | `bench/windows.py` | Prompt Guard 2 input scope × window size experiment |
+| `bench/action_level.py` | Action-level metric (#9): gateway × scenario × injection, scored by the evaluator |
+| `bench/action/` | Evaluator, canonicalizer, simulated AgentDojo tool layer, scenario specs, trace schema ([README](bench/action/README.md)) |
+| `tests/` | Evaluator tests (`make test`) |
 | `bench/results/` | Generated tables (JSON) |
 
 ---
